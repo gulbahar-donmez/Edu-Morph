@@ -1,0 +1,156 @@
+.recommendations-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.recommendations-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.recommendations-header h1 {
+    color: #1e293b;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    position: relative;
+    letter-spacing: -0.5px;
+}
+
+.recommendations-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: #4a90e2;
+    border-radius: 2px;
+    opacity: 0.8;
+}
+
+.recommendations-content {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 2rem;
+}
+
+.recommendations-text {
+    color: #475569;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.recommendations-text h3 {
+    color: #1e293b;
+    margin: 1.5rem 0 1rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.recommendations-text ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.recommendations-text li {
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 8px;
+    color: #475569;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    border-left: 4px solid #4a90e2;
+}
+
+.navigation-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.back-button,
+.dashboard-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-button {
+    background-color: #64748b;
+    color: white;
+}
+
+.back-button:hover {
+    background-color: #475569;
+}
+
+.dashboard-button {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.dashboard-button:hover {
+    background-color: #357abd;
+}
+
+.loading-message {
+    color: #475569;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-message {
+    color: #dc2626;
+    background: rgba(254, 226, 226, 0.8);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .recommendations-container {
+        padding: 1rem;
+    }
+
+    .recommendations-content {
+        padding: 1.5rem;
+    }
+
+    .recommendations-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .recommendations-text {
+        font-size: 1rem;
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .back-button,
+    .dashboard-button {
+        width: 100%;
+    }
+} 

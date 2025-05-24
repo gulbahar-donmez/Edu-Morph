@@ -1,0 +1,26 @@
+.main-container {
+    height: 100vh;
+    background: url('../images/1.png') no-repeat center center / cover;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 50px;
+  }
+  
+  .main-card {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 20px 40px;
+    border-radius: 20px;
+    text-align: center;
+    backdrop-filter: blur(6px);
+  }
+  
+  .main-card button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+  }
+  

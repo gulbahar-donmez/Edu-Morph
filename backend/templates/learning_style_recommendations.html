@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenme Stili Önerileri</title>
+    <style>
+        body {
+            font-family:  Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+        .dominant-style {
+            font-size: 1.2em;
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background-color: #004494;
+        }
+
+        .ai-recommendations {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            line-height: 1.7;
+            color: #333;
+        }
+
+
+
+        .ai-recommendations h2 {
+            color: #0056b3;
+            font-size: 1.6em;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .ai-recommendations h2:first-of-type {
+            margin-top: 0;
+        }
+
+        .ai-recommendations h3 {
+            color: #17a2b8;
+            font-size: 1.3em;
+            margin-top: 1.2em;
+            margin-bottom: 0.6em;
+            font-weight: 600;
+        }
+
+        .ai-recommendations ul {
+            list-style-type: '✓ ';
+            padding-left: 20px;
+            margin-bottom: 1em;
+        }
+
+        .ai-recommendations li {
+            margin-bottom: 0.7em;
+        }
+
+        .ai-recommendations strong {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Öğrenme Stili Önerileri</h1>
+        <div class="dominant-style">
+            Baskın Öğrenme Stiliniz: {{ dominant_style }}
+        </div>
+    </div>
+
+    <div class="ai-recommendations">
+        {{ recommendations | safe }}
+    </div>
+
+    <div style="text-align: center;">
+        <a href="/learning-style-assessment" class="back-button">Geri Dön</a>
+    </div>
+
+    <script>
+        // Sayfa yüklendiğinde AI çıktısını daha güzel göstermek için bazı düzenlemeler yap
+        document.addEventListener('DOMContentLoaded', function() {
+            const recommendations = document.querySelector('.ai-recommendations');
+            
+            // Başlıkları düzenle
+            const headings = recommendations.querySelectorAll('h2, h3');
+            headings.forEach(heading => {
+                heading.classList.add('ai-heading');
+            });
+            
+            // Listeleri düzenle
+            const lists = recommendations.querySelectorAll('ul, ol');
+            lists.forEach(list => {
+                list.classList.add('ai-list');
+            });
+            
+            // Paragrafları düzenle
+            const paragraphs = recommendations.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                p.classList.add('ai-paragraph');
+            });
+        });
+    </script>
+</body>
+</html> 

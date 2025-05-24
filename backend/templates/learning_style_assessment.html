@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenme Stili Analizi</title>
+    <style>
+        body {
+            font-family: Verdana;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .question-container {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .question-container:hover {
+            transform: translateY(-2px);
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+        }
+        .options {
+            margin-left: 20px;
+        }
+        .option {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .option label {
+            cursor: pointer;
+            display: inline-block;
+            width: calc(100% - 30px);
+            vertical-align: middle;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            display: block;
+            margin: 20px auto;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: none;
+        }
+        .learning-styles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .style-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .style-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .style-score {
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .style-progress {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+        .visual-progress {
+            background-color: #4CAF50;
+        }
+        .auditory-progress {
+            background-color: #2196F3;
+        }
+        .kinesthetic-progress {
+            background-color: #FF9800;
+        }
+        .ai-analysis {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .ai-analysis h3 {
+            color: #333;
+            margin-top: 0;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .ai-analysis h4 {
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        .ai-analysis p {
+            line-height: 1.6;
+            color: #34495e;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <h1>Öğrenme Stili Analizi</h1>
+    <form id="assessmentForm">
+        <div class="question-container">
+            <div class="question">1. Yeni bir eşyayı (örneğin mobilya) kurarken talimatları nasıl takip etmeyi tercih edersiniz?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q1" value="A" required>
+                    <label>Şemalara, resimlere veya çizimlere bakarak.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" value="B">
+                    <label>Birinin adımları size okumasını veya adımları kendi kendinize sesli okuyarak.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" value="C">
+                    <label>Parçaları elime alıp deneyerek, talimatlara sadece takıldığımda bakarak.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">2. Yeni ve karmaşık bir konu öğrenirken size en çok ne yardımcı olur?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q2" value="A" required>
+                    <label>Öğretmenin tahtaya çizdiği diyagramlar, grafikler veya sunumdaki görseller.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" value="B">
+                    <label>Öğretmenin açıklamalarını dikkatle dinlemek veya konu hakkında tartışmalara katılmak.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" value="C">
+                    <label>Konuyla ilgili bir aktivite yapmak, not almak veya bir model oluşturmak.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">3. Bir bilgiyi (örneğin bir telefon numarası veya adres) hatırlamak için genellikle ne yaparsınız?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q3" value="A" required>
+                    <label>Bilgiyi gözümde canlandırırım veya yazılı halini görmeye çalışırım.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" value="B">
+                    <label>Bilgiyi kendi kendime veya başkasına tekrar ederim, sesini duymaya çalışırım.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" value="C">
+                    <label>Bilgiyi yazarım veya telefona/klavyeye tuşlarmış gibi yaparım.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">4. Birine yol tarifi verirken genellikle ne yaparsınız?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q4" value="A" required>
+                    <label>Bir harita çizerim veya önemli görsel işaretlerden (bina, heykel vb.) bahsederim.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" value="B">
+                    <label>Adım adım sözlü olarak anlatırım ("Şuradan sola dön, sonra düz git...").</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" value="C">
+                    <label>Ellerimi ve kollarımı kullanarak yönleri gösteririm, belki "benimle gel" der gibi yaparım.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">5. Bir sınava çalışırken hangi yöntem size daha etkili gelir?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q5" value="A" required>
+                    <label>Notlarımı, kitapları veya şemaları tekrar tekrar okumak, renkli kalemlerle işaretlemek.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q5" value="B">
+                    <label>Notlarımı sesli okumak, bir çalışma arkadaşıyla konuları tartışmak veya ses kaydı dinlemek.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q5" value="C">
+                    <label>Notlarımı yeniden yazmak, özet çıkarmak, kavram haritaları oluşturmak veya çalışırken odada dolaşmak.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">6. Zor bir problemle karşılaştığınızda ilk ne yapma eğilimindesiniz?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q6" value="A" required>
+                    <label>Problemi zihnimde canlandırmaya veya adımları bir yere listelemeye çalışırım.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q6" value="B">
+                    <label>Problemi kendi kendime veya bir başkasıyla sesli olarak konuşarak anlamaya çalışırım.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q6" value="C">
+                    <label>Problemin parçalarını temsil eden nesnelerle oynamaya, deneme yanılma yapmaya veya çözüm ararken hareket etmeye başlarım.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">7. Yeni bir beceri (örneğin bir bilgisayar programı kullanmak veya bir spor hareketi) öğrenirken neyi tercih edersiniz?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q7" value="A" required>
+                    <label>Birinin yapışını izlemeyi veya bir video/görsel rehber takip etmeyi.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q7" value="B">
+                    <label>Adımların sözlü olarak açıklanmasını dinlemeyi.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q7" value="C">
+                    <label>Doğrudan kendim denemeyi, yaparak öğrenmeyi.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">8. İnsanların isimlerini hatırlamakta zorlanıyorsanız, hangisi size daha çok yardımcı olur?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q8" value="A" required>
+                    <label>Kişinin yüzünü veya isminin yazılışını zihnimde canlandırmak.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q8" value="B">
+                    <label>İsmi tanışırken birkaç kez tekrar etmek veya duymak.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q8" value="C">
+                    <label>Kişiyle el sıkışmak veya ismi bir yere not almak.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">9. Bir sunum veya dersten sonra en çok neyi hatırlarsınız?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q9" value="A" required>
+                    <label>Gösterilen slaytları, resimleri veya konuşmacının görünüşünü.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q9" value="B">
+                    <label>Anlatılan hikayeleri, yapılan şakaları veya konuşmacının ses tonunu.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q9" value="C">
+                    <label>Yapılan aktiviteyi, not aldıysam yazdıklarımı veya o anki hislerimi.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">10. Zor bir kelimeyi hecelerken doğruluğundan nasıl emin olursunuz?</div>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q10" value="A" required>
+                    <label>Kelimeyi yazarım ve "doğru görünüp görünmediğine" bakarım.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q10" value="B">
+                    <label>Kelimeyi sesli olarak hecelerim, kulağa doğru gelip gelmediğini kontrol ederim.</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q10" value="C">
+                    <label>Kelimeyi havaya yazar gibi yaparım veya parmaklarımla takip ederim.</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Analizi Tamamla</button>
+    </form>
+
+    <div id="result" class="result">
+        <div class="learning-styles">
+            <div class="style-box">
+                <div class="style-name">Görsel Öğrenme</div>
+                <div class="style-score">
+                    <div class="style-progress visual-progress" id="visual-progress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="style-box">
+                <div class="style-name">İşitsel Öğrenme</div>
+                <div class="style-score">
+                    <div class="style-progress auditory-progress" id="auditory-progress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="style-box">
+                <div class="style-name">Kinestetik Öğrenme</div>
+                <div class="style-score">
+                    <div class="style-progress kinesthetic-progress" id="kinesthetic-progress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>AI analizi yapılıyor...</p>
+        </div>
+        <div id="ai-analysis" class="ai-analysis"></div>
+        <button onclick="window.location.href='/'" class="back-btn">Ana Sayfaya Dön</button>
+    </div>
+
+    <script>
+        // Token kontrolü için yardımcı fonksiyonlar
+        function isTokenExpired(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                const payload = JSON.parse(jsonPayload);
+                const expirationTime = payload.exp * 1000; // Convert to milliseconds
+                return Date.now() >= expirationTime;
+            } catch (e) {
+                console.error("Token parse error:", e);
+                return true; // If we can't parse the token, consider it expired
+            }
+        }
+
+        async function refreshToken() {
+            try {
+                const response = await fetch('/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        'username': localStorage.getItem('username'),
+                        'password': localStorage.getItem('password')
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.access_token);
+                    return data.access_token;
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Token refresh failed');
+                }
+            } catch (error) {
+                console.error('Token refresh error:', error);
+                // Redirect to login page with error message
+                const errorMessage = encodeURIComponent(error.message);
+                window.location.href = `/login?error=${errorMessage}`;
+                return null;
+            }
+        }
+
+        async function handleApiError(response) {
+            if (response.status === 401) {
+                const errorData = await response.json();
+                const errorMessage = errorData.detail || 'Oturum süreniz doldu';
+                
+                if (errorMessage.includes('expired')) {
+                    // Try to refresh token
+                    const newToken = await refreshToken();
+                    if (newToken) {
+                        return newToken; // Return new token for retry
+                    }
+                }
+                
+                alert(errorMessage);
+                window.location.href = '/login';
+                return null;
+            }
+            return false; // Not a token error
+        }
+
+        async function getValidToken() {
+            let token = localStorage.getItem('token');
+            if (!token || isTokenExpired(token)) {
+                token = await refreshToken();
+            }
+            return token;
+        }
+
+        document.getElementById('assessmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // --- 1. Cevapları Topla ---
+            const answers = {};
+            let allAnswered = true;
+            for (let i = 1; i <= 10; i++) {
+                const checkedRadio = document.querySelector(`input[name="q${i}"]:checked`);
+                if (checkedRadio) {
+                    answers[`q${i}`] = checkedRadio.value;
+                } else {
+                    allAnswered = false;
+                    break;
+                }
+            }
+
+            if (!allAnswered) {
+                alert("Lütfen tüm soruları yanıtlayın.");
+                return;
+            }
+
+            // --- 2. Skorları Frontend'de Hesapla ---
+            const scores = calculateLearningStyleScores(answers);
+
+            // --- 3. Sonuç Alanını Göster ve Çubukları Güncelle ---
+            document.getElementById('result').style.display = 'block';
+            updateLearningStyleBars(scores);
+            document.getElementById('ai-analysis').innerHTML = '';
+            document.getElementById('loading').style.display = 'none';
+
+            // --- 4. Skorları Backend'e Kaydet ---
+            try {
+                const token = await getValidToken();
+                if (!token) {
+                    alert("Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const saveResponse = await fetch('/learning-style-assessment/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        visual_score: scores.visual,
+                        auditory_score: scores.auditory,
+                        kinesthetic_score: scores.kinesthetic,
+                        dominant_style: scores.dominantStyle
+                    })
+                });
+
+                if (!saveResponse.ok) {
+                    const retryToken = await handleApiError(saveResponse);
+                    if (retryToken) {
+                        // Retry with new token
+                        const retryResponse = await fetch('/learning-style-assessment/save', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${retryToken}`
+                            },
+                            body: JSON.stringify({
+                                visual_score: scores.visual,
+                                auditory_score: scores.auditory,
+                                kinesthetic_score: scores.kinesthetic,
+                                dominant_style: scores.dominantStyle
+                            })
+                        });
+                        if (!retryResponse.ok) {
+                            const errorText = await retryResponse.text();
+                            throw new Error(errorText);
+                        }
+                    } else {
+                        const errorText = await saveResponse.text();
+                        throw new Error(errorText);
+                    }
+                }
+            } catch (error) {
+                console.error("Skor kaydetme hatası:", error);
+                alert(`Skor kaydetme hatası: ${error.message}`);
+            }
+
+            // --- 5. AI Önerilerini Backend'den Al ---
+            try {
+                const token = await getValidToken();
+                if (!token) {
+                    document.getElementById('ai-analysis').innerHTML = '<p>Önerileri görmek için giriş yapmalısınız.</p>';
+                    document.getElementById('ai-analysis').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('ai-analysis').style.display = 'none';
+
+                const recommendationResponse = await fetch('/learning-style/recommendations', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!recommendationResponse.ok) {
+                    const retryToken = await handleApiError(recommendationResponse);
+                    if (retryToken) {
+                        // Retry with new token
+                        const retryResponse = await fetch('/learning-style/recommendations', {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${retryToken}`
+                            }
+                        });
+                        if (!retryResponse.ok) {
+                            throw new Error('Failed to get recommendations after token refresh');
+                        }
+                        const recommendationResult = await retryResponse.json();
+                        document.getElementById('ai-analysis').innerHTML = `
+                            <h3>Öğrenme Stili Önerileri (${recommendationResult.dominant_style})</h3>
+                            <pre style="white-space: pre-wrap; word-wrap: break-word;">${recommendationResult.recommendations}</pre>
+                        `;
+                    }
+                } else {
+                    const recommendationResult = await recommendationResponse.json();
+                    document.getElementById('ai-analysis').innerHTML = `
+                        <h3>Öğrenme Stili Önerileri (${recommendationResult.dominant_style})</h3>
+                        <pre style="white-space: pre-wrap; word-wrap: break-word;">${recommendationResult.recommendations}</pre>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('ai-analysis').innerHTML = `<p class="error-message">${error.message}</p>`;
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('ai-analysis').style.display = 'block';
+            }
+        });
+
+        function calculateLearningStyleScores(answers) {
+            let visual = 0;
+            let auditory = 0;
+            let kinesthetic = 0;
+
+            const styleMapping = {
+                q1: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q2: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q3: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q4: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q5: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q6: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q7: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q8: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q9: { A: 'visual', B: 'auditory', C: 'kinesthetic' },
+                q10: { A: 'visual', B: 'auditory', C: 'kinesthetic' }
+            };
+
+            for (const question in answers) {
+                const answer = answers[question];
+                if (styleMapping[question]) {
+                    const style = styleMapping[question][answer];
+                    if (style === 'visual') visual++;
+                    else if (style === 'auditory') auditory++;
+                    else if (style === 'kinesthetic') kinesthetic++;
+                }
+            }
+
+            let dominantStyle = 'Bilinmiyor';
+            const maxScore = Math.max(visual, auditory, kinesthetic);
+            if (maxScore > 0) {
+                if (visual === maxScore) dominantStyle = 'Görsel';
+                if (auditory === maxScore) dominantStyle = (dominantStyle !== 'Bilinmiyor' ? dominantStyle + ' / ' : '') + 'İşitsel';
+                if (kinesthetic === maxScore) dominantStyle = (dominantStyle !== 'Bilinmiyor' ? dominantStyle + ' / ' : '') + 'Kinestetik';
+            }
+
+            const totalQuestions = Object.keys(answers).length;
+            const visualPercent = totalQuestions > 0 ? Math.round((visual / totalQuestions) * 100) : 0;
+            const auditoryPercent = totalQuestions > 0 ? Math.round((auditory / totalQuestions) * 100) : 0;
+            const kinestheticPercent = totalQuestions > 0 ? Math.round((kinesthetic / totalQuestions) * 100) : 0;
+
+            return {
+                visual: visualPercent,
+                auditory: auditoryPercent,
+                kinesthetic: kinestheticPercent,
+                dominantStyle: dominantStyle
+            };
+        }
+
+        function updateLearningStyleBars(scores) {
+            document.getElementById('visual-progress').style.width = `${scores.visual}%`;
+            document.getElementById('auditory-progress').style.width = `${scores.auditory}%`;
+            document.getElementById('kinesthetic-progress').style.width = `${scores.kinesthetic}%`;
+        }
+    </script>
+</body>
+</html> 

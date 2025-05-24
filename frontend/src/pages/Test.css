@@ -1,0 +1,49 @@
+.test-container, .personality-container {
+    min-height: 100vh;
+    background-color: #e0f7fa; /* hoş açık mavi arka plan */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 50px 20px;
+    font-family: 'Poppins', sans-serif; /* güzel font */
+  }
+  
+  .test-title, .personality-title {
+    font-size: 32px;
+    color: #1565c0; /* koyu mavi başlık rengi */
+    margin-bottom: 30px;
+    font-weight: 600;
+  }
+  
+  .question-card, .result-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .options label {
+    display: block;
+    margin: 10px 0;
+    cursor: pointer;
+  }
+  
+  .submit-btn, .back-btn {
+    background: #1565c0;
+    color: white;
+    padding: 12px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .submit-btn:hover, .back-btn:hover {
+    background: #0d47a1;
+  }
+  

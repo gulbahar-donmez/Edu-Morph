@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konu Anlatımı</title>
+    <link rel="stylesheet" href="/static/css/ai-output.css"> <!-- Bu yolun doğru olduğundan emin olun -->
+
+    <!-- *** YENİ EKLENEN SATIR: Marked.js Kütüphanesi *** -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- *** YENİ EKLENEN SATIR SONU *** -->
+
+    <style>
+        /* ... mevcut stil kodlarınız aynı kalacak ... */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .topic-explanation {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .question-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .question-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Added for better width control */
+            resize: vertical;
+            min-height: 100px;
+        }
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+        .answer-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: none; /* Initially hidden */
+            /* Markdown'dan gelen içeriğin daha iyi görünmesi için */
+            line-height: 1.6;
+            overflow-wrap: break-word; /* Uzun kelimelerin taşmasını engelle */
+        }
+        /* Markdown'dan gelebilecek bazı etiketler için temel stiller */
+        .answer-section img {
+             max-width: 100%; /* Resimlerin taşmasını engelle */
+             height: auto;    /* Oranı koru */
+             display: block;  /* Ortalama veya kenar boşluğu için */
+             margin: 10px 0; /* Resimlere biraz boşluk ver */
+             border-radius: 4px; /* İsteğe bağlı: Köşeleri yuvarlat */
+        }
+        .answer-section pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto; /* Kod blokları taşarsa kaydırma çubuğu */
+        }
+        .answer-section code {
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        }
+        .answer-section pre code {
+             background-color: transparent; /* pre içindeki code'un arka planını sıfırla */
+             padding: 0;
+        }
+        .answer-section blockquote {
+            border-left: 4px solid #ccc;
+            padding-left: 10px;
+            margin-left: 0;
+            color: #555;
+        }
+        /* --- Diğer stil kodlarınız --- */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none; /* Initially hidden */
+        }
+        .spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #d32f2f;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 4px;
+            margin-top: 10px;
+            border: 1px solid #d32f2f;
+        }
+        .logout-button {
+             background-color: #f44336; /* Red */
+             color: white;
+             padding: 8px 15px;
+             border: none;
+             border-radius: 4px;
+             cursor: pointer;
+             float: right; /* Position to the right */
+             margin-left: 10px; /* Spacing */
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+        .welcome-message {
+            display: inline-block; /* Keep on same line as logout */
+            margin-right: 10px; /* Spacing */
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="topic-explanation">
+        <!-- Optional: Add Welcome Message and Logout Button -->
+        <div style="overflow: hidden; margin-bottom: 15px;"> <!-- Clearfix for float -->
+            <button id="logoutBtn" class="logout-button">Çıkış Yap</button>
+            <span id="welcomeMsg" class="welcome-message"></span>
+        </div>
+        <hr style="margin-bottom: 20px;">
+
+        <h1>EDU-GPT</h1>
+        <p>Anlamadığınız konular hakkında sorular sorabilirsiniz.Size yardımcı olak için burdayız...</p>
+
+        <div class="question-form">
+            <form id="questionForm">
+                <textarea
+                    id="questionInput"
+                    class="question-input"
+                    placeholder="Sormak istediğiniz soruyu buraya yazın..."
+                    required></textarea>
+                <button type="submit" class="submit-button">Soru Sor</button>
+            </form>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Cevap hazırlanıyor...</p>
+        </div>
+
+        <div id="answer" class="answer-section">
+            <h2>Cevap:</h2>
+            <div id="answerContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Function to redirect to login
+        function redirectToLogin() {
+            localStorage.removeItem('token'); // Clear potentially invalid token
+            localStorage.removeItem('username');
+            window.location.href = '/login'; // Assuming '/login' is your login page route
+        }
+
+        // Check for token on page load
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+
+        if (!token) {
+            alert('Bu sayfaya erişmek için giriş yapmalısınız.');
+            redirectToLogin();
+        } else {
+             // Optional: Display welcome message
+            const welcomeMsgEl = document.getElementById('welcomeMsg');
+            if (welcomeMsgEl && username) {
+                welcomeMsgEl.textContent = `Hoşgeldiniz, ${username}!`;
+            }
+        }
+
+        // Logout functionality
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                alert('Başarıyla çıkış yapıldı.');
+                window.location.href = '/login';
+            });
+        }
+
+
+        document.getElementById('questionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const currentToken = localStorage.getItem('token');
+            if (!currentToken) {
+                 alert('Oturumunuz sonlanmış. Lütfen tekrar giriş yapın.');
+                 redirectToLogin();
+                 return;
+            }
+
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value;
+            if (!question.trim()) {
+                alert('Lütfen bir soru yazın');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('answer').style.display = 'none';
+            document.getElementById('answerContent').innerHTML = '';
+
+            try {
+                const response = await fetch('/topic-explanation/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    // *** DEĞİŞİKLİK BURADA BAŞLIYOR ***
+                    console.log('Raw AI Answer:', result.answer); // Ham cevabı konsola yazdır (hata ayıklama için)
+
+                    // Marked.js kullanarak Markdown'ı HTML'e çevir
+                    // Not: marked.parse() varsayılan olarak temel HTML sanitizasyonu yapar.
+                    const htmlAnswer = marked.parse(result.answer);
+
+                    document.getElementById('answerContent').innerHTML = htmlAnswer;
+                    // *** DEĞİŞİKLİK BURADA BİTİYOR ***
+
+                    document.getElementById('answer').style.display = 'block';
+                    questionInput.value = ''; // Giriş alanını temizle
+                } else {
+                     if (response.status === 401 || response.status === 403) {
+                         alert('Oturumunuz geçersiz veya süresi dolmuş. Lütfen tekrar giriş yapın.');
+                         redirectToLogin();
+                         return;
+                     }
+                    const errorText = await response.text();
+                    let detail = errorText;
+                    try {
+                       const errorJson = JSON.parse(errorText);
+                       detail = errorJson.detail || errorText;
+                    } catch(parseError) { }
+                    document.getElementById('answerContent').innerHTML =
+                        `<p class="error-message">Cevap alınırken hata oluştu (Kod: ${response.status}): ${detail}</p>`;
+                    document.getElementById('answer').style.display = 'block';
+                }
+            } catch (error) {
+                 console.error("Fetch error:", error);
+                 document.getElementById('answerContent').innerHTML =
+                    `<p class="error-message">Bir ağ hatası veya başka bir sorun oluştu: ${error.message}</p>`;
+                 document.getElementById('answer').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
