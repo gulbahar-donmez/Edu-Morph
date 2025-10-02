@@ -30,7 +30,7 @@ app.add_middleware(
 )
 
 # Güvenlik ayarları
-SECRET_KEY = "acoztm3revp1vfj7ld5sz2ndg5xp79r9fnr2p4hx2dy63h6a8efhj6rm54u8evh8"
+SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440  # 24 saat
 
@@ -38,7 +38,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Gemini API yapılandırması
-GEMINI_API_KEY = "AIzaSyDW8dyttXw4sq4I6cYjehFEJyh0JtSvqJs"
+GEMINI_API_KEY = "your_api_key"
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
